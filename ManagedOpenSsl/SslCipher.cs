@@ -31,7 +31,7 @@ using OpenSSL.Core;
 
 namespace OpenSSL
 {
-	class SslCipher : Base, IStackable
+	public class SslCipher : Base, IStackable
 	{
 		#region SSL_CIPHER
 		[StructLayout(LayoutKind.Sequential)]

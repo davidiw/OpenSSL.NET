@@ -196,7 +196,7 @@ namespace OpenSSL
 		All = High | Medium | Low
 	}
 
-	enum SslFileType
+	public enum SslFileType
 	{
 		/// <summary>
 		/// SSL_FILETYPE_PEM
@@ -208,7 +208,7 @@ namespace OpenSSL
 		ASN1 = 2
 	}
 
-	enum AuthenticationMethod
+	public enum AuthenticationMethod
 	{
 		None,
 		Rsa,
@@ -218,7 +218,7 @@ namespace OpenSSL
 		ECDsa
 	}
 
-	enum HandshakeState
+	public enum HandshakeState
 	{
 		None,
 		Renegotiate,
@@ -231,7 +231,7 @@ namespace OpenSSL
 	/// <summary>
 	/// Options enumeration for Options property
 	/// </summary>
-	enum SslOptions
+	public enum SslOptions
 	{
 		SSL_OP_MICROSOFT_SESS_ID_BUG = 0x00000001,
 		SSL_OP_NETSCAPE_CHALLENGE_BUG = 0x00000002,
@@ -242,6 +242,8 @@ namespace OpenSSL
 		SSL_OP_SSLEAY_080_CLIENT_DH_BUG = 0x00000080,
 		SSL_OP_TLS_D5_BUG = 0x00000100,
 		SSL_OP_TLS_BLOCK_PADDING_BUG = 0x00000200,
+    // DTLS Cookie Exchange
+    SSL_OP_COOKIE_EXCHANGE = 0x00002000,
 
 		/* Disable SSL 3.0/TLS 1.0 CBC vulnerability workaround that was added
 		 * in OpenSSL 0.9.6d.  Usually (depending on the application protocol)
@@ -282,7 +284,7 @@ namespace OpenSSL
 		SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG = 0x40000000,
 	}
 
-	enum SslMode
+	public enum SslMode
 	{
 		/* Allow SSL_write(..., n) to return r with 0 < r < n (i.e. report success
 		 * when just a single record has been written): */
@@ -299,7 +301,7 @@ namespace OpenSSL
 		SSL_MODE_NO_AUTO_CHAIN = 0x00000008
 	}
 
-	enum VerifyMode
+	public enum VerifyMode
 	{
 		SSL_VERIFY_NONE = 0x00,
 		SSL_VERIFY_PEER = 0x01,
@@ -307,4 +309,13 @@ namespace OpenSSL
 		SSL_VERIFY_CLIENT_ONCE = 0x04,
 	}
 
+  public enum SslState
+  {
+    CONNECT = 0x1000,
+    ACCEPT = 0x2000,
+    INIT = 0x3000,
+    BEFORE = 0x4000,
+    OK = 0x3,
+    RENEGOTIATE = 0x3004
+  }
 }

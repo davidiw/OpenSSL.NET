@@ -33,12 +33,12 @@ using OpenSSL.X509;
 
 namespace OpenSSL
 {
-	delegate int ClientCertCallbackHandler(Ssl ssl, out X509Certificate cert, out CryptoKey key);
+	public delegate int ClientCertCallbackHandler(Ssl ssl, out X509Certificate cert, out CryptoKey key);
 
 	/// <summary>
 	/// Wraps the SST_CTX structure and methods
 	/// </summary>
-	internal class SslContext : Base, IDisposable
+	public class SslContext : Base, IDisposable
 	{
 		#region SSL_CTX
 		[StructLayout(LayoutKind.Sequential)]
@@ -374,6 +374,11 @@ namespace OpenSSL
 		public int UseCertificate(X509Certificate cert)
 		{
 			return Native.ExpectSuccess(Native.SSL_CTX_use_certificate(this.ptr, cert.Handle));
+		}
+
+		public int UseCertificateFile(string filename, SslFileType type)
+		{
+			return Native.ExpectSuccess(Native.SSL_CTX_use_certificate_file(this.ptr, filename, (int)type));
 		}
 
 		public int UseCertificateChainFile(string filename)

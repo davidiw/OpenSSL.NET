@@ -1995,6 +1995,9 @@ namespace OpenSSL.Core
 		public extern static int SSL_CTX_use_certificate(IntPtr ctx, IntPtr cert);
 
 		[DllImport(SSLDLLNAME)]
+		public extern static int SSL_CTX_use_certificate_file(IntPtr ctx, string file, int type);
+
+		[DllImport(SSLDLLNAME)]
 		public extern static int SSL_CTX_use_PrivateKey(IntPtr ctx, IntPtr pkey);
 
 		[DllImport(SSLDLLNAME)]
@@ -2109,6 +2112,13 @@ namespace OpenSSL.Core
 
 		[DllImport(SSLDLLNAME)]
 		public extern static int SSL_use_PrivateKey(IntPtr ssl, IntPtr evp_pkey);
+
+    // IntPtr instead of string as the the latter causes an unrecoverable error
+		[DllImport(SSLDLLNAME, CharSet = CharSet.Ansi)]
+		public extern static IntPtr SSL_state_string_long(IntPtr ssl);
+
+		[DllImport(SSLDLLNAME)]
+		public extern static int SSL_state(IntPtr ssl);
 
 		#endregion
 

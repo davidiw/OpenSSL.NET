@@ -32,7 +32,7 @@ using OpenSSL.X509;
 
 namespace OpenSSL
 {
-	enum SslError
+	public enum SslError
 	{
 		SSL_ERROR_NONE = 0,
 		SSL_ERROR_SSL = 1,
@@ -45,11 +45,8 @@ namespace OpenSSL
 		SSL_ERROR_WANT_ACCEPT = 8
 	}
 
-	class Ssl : Base, IDisposable
+	public class Ssl : Base, IDisposable
 	{
-		internal const int SSL_ST_CONNECT = 0x1000;
-		internal const int SSL_ST_ACCEPT = 0x2000;
-
 		#region ssl_st
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -59,7 +56,7 @@ namespace OpenSSL
 			 * (one of SSL2_VERSION, SSL3_VERSION, TLS1_VERSION, DTLS1_VERSION)
 			 */
 			public int version;
-			public int type; /* SSL_ST_CONNECT or SSL_ST_ACCEPT */
+			public int type; /* SslType */
 
 			public IntPtr method;  //SSL_METHOD *method; /* SSLv3 */
 
@@ -260,19 +257,17 @@ namespace OpenSSL
 		#endregion
 
 		#region Properties
-		public int State
+		public SslState State
 		{
 			get
 			{
-				int offset = (int)Marshal.OffsetOf(typeof(ssl_st), "state");
-				IntPtr offset_ptr = new IntPtr((int)this.ptr + offset);
-				return Marshal.ReadInt32(offset_ptr);
+        return (SslState) Native.SSL_state(this.ptr);
 			}
 			set
 			{
 				int offset = (int)Marshal.OffsetOf(typeof(ssl_st), "state");
 				IntPtr offset_ptr = new IntPtr((int)this.ptr + offset);
-				Marshal.WriteInt32(offset_ptr, value);
+				Marshal.WriteInt32(offset_ptr, (int) value);
 			}
 		}
 
@@ -403,6 +398,11 @@ namespace OpenSSL
 		{
 			return Native.ExpectSuccess(Native.SSL_use_PrivateKey_file(this.ptr, filename, (int)type));
 		}
+
+    public string StateStringLong()
+    {
+      return Marshal.PtrToStringAnsi(Native.SSL_state_string_long(this.ptr));
+    }
 
 		public int Clear()
 		{

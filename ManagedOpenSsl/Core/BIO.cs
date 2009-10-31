@@ -260,6 +260,17 @@ namespace OpenSSL.Core
 			return new ArraySegment<byte>(buf, 0, ret);
 		}
 
+    /// <summary>
+    /// Calls BIO_read using a user provided array.
+    /// </summary>
+    /// <param name="buf">User buffer</param>
+    /// <param name="len">Maximum amount of bytes to read.</param>
+    /// <returns>The amount of bytes read.</returns>
+		public int Read(byte[] buf, int len)
+		{
+			return Native.BIO_read(this.ptr, buf, len);
+		}
+
 		/// <summary>
 		/// Calls BIO_gets()
 		/// </summary>

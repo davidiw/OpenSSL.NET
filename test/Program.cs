@@ -84,6 +84,7 @@ namespace test
 			tests.Add("aes", new TestAES());
             tests.Add("hmac", new TestHMAC());
             tests.Add("server", new TestServer());
+            tests.Add("dtlsmembio", new TestDtlsMemBio());
 
 			AddNullCommand(tests, "bf");
 			AddNullCommand(tests, "bn");
