@@ -17,7 +17,7 @@ ifeq ($(uname_S),Darwin)
 NUNIT = nunit-console2 $(NUNIT_FLAGS)
 endif
 ifeq ($(uname_S),Linux)
-NUNIT = LD_LIBRARY_PATH=$(D_OUT) nunit-console $(NUNIT_FLAGS)
+NUNIT = LD_LIBRARY_PATH=$(D_OUT) nunit-console2 $(NUNIT_FLAGS)
 endif
 
 SRCS = \
