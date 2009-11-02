@@ -104,8 +104,7 @@ namespace OpenSSL
 			public IntPtr default_verify_callback; //int (*default_verify_callback)(int ok,X509_STORE_CTX *ctx)
 			public IntPtr generate_session_id; //typedef int (*GEN_SESSION_CB)(const SSL *ssl, unsigned char *id,unsigned int *id_len);
 			#region X509_VERIFY_PARAM
-			public IntPtr x509_verify_param_name;
-			public long x509_verify_param_check_time;
+			public IntPtr x509_verify_param_name; public long x509_verify_param_check_time;
 			public int x509_verify_param_inh_flags;
 			public int x509_verify_param_flags;
 			public int x509_verify_param_purpose;

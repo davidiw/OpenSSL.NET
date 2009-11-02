@@ -266,8 +266,7 @@ namespace OpenSSL
 			set
 			{
 				int offset = (int)Marshal.OffsetOf(typeof(ssl_st), "state");
-				IntPtr offset_ptr = new IntPtr((int)this.ptr + offset);
-				Marshal.WriteInt32(offset_ptr, (int) value);
+				Marshal.WriteInt32(this.ptr, offset, (int) value);
 			}
 		}
 
@@ -371,7 +370,7 @@ namespace OpenSSL
 
 		public int DoHandshake()
 		{
-			return Native.SSL_do_handshake(this.ptr);
+      return Native.SSL_do_handshake(this.ptr);
 		}
 
 		public void SetAcceptState()
@@ -402,6 +401,11 @@ namespace OpenSSL
     public string StateStringLong()
     {
       return Marshal.PtrToStringAnsi(Native.SSL_state_string_long(this.ptr));
+    }
+
+    public void SetReadAhead(int yes)
+    {
+      Native.SSL_set_read_ahead(this.ptr, yes);
     }
 
 		public int Clear()

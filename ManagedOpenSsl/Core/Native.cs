@@ -2120,6 +2120,9 @@ namespace OpenSSL.Core
 		[DllImport(SSLDLLNAME)]
 		public extern static int SSL_state(IntPtr ssl);
 
+		[DllImport(SSLDLLNAME)]
+		public extern static void SSL_set_read_ahead(IntPtr ssl, int yes);
+
 		#endregion
 
 		#endregion
