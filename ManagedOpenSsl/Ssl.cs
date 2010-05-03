@@ -413,6 +413,41 @@ namespace OpenSSL
 			return Native.ExpectSuccess(Native.SSL_clear(this.ptr));
 		}
 
+    [StructLayout(LayoutKind.Sequential)]
+    private struct Timeval {
+      public long tv_sec;
+      public long tv_usec;
+    };
+
+    public long GetTimeout()
+    {
+      Timeval timeval = new Timeval();
+      IntPtr tp = Marshal.AllocHGlobal(Marshal.SizeOf(timeval));
+      Marshal.StructureToPtr(timeval, tp, false);
+      IntPtr result = Native.dtls1_get_timeout(this.ptr, tp);
+      if(result == IntPtr.Zero) {
+        return -1;
+      }
+      timeval = (Timeval) Marshal.PtrToStructure(tp, typeof(Timeval));
+      Marshal.FreeHGlobal(tp);
+      return (timeval.tv_sec * 1000) + (timeval.tv_usec / 1000);
+    }
+
+    public int TimerExpired()
+    {
+      return Native.dtls1_read_failed(this.ptr, -1);
+    }
+
+    public long SetOptions(long options)
+    {
+      return Native.SSL_ctrl(this.ptr, (int) SslCtrl.OPTIONS, options, IntPtr.Zero);
+    }
+
+    public long ClearOptions(long options)
+    {
+      return Native.SSL_ctrl(this.ptr, (int) SslCtrl.CLEAR_OPTIONS, options, IntPtr.Zero);
+    }
+
 		#endregion
 
 		#region Overrides

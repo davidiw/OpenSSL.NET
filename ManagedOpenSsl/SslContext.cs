@@ -34,6 +34,9 @@ using OpenSSL.X509;
 namespace OpenSSL
 {
 	public delegate int ClientCertCallbackHandler(Ssl ssl, out X509Certificate cert, out CryptoKey key);
+  public delegate int GenerateCookieCallback(Ssl ssl, out byte[] cookie);
+  public delegate int VerifyCookieCallback(Ssl ssl, byte[] cookie);
+
 
 	/// <summary>
 	/// Wraps the SST_CTX structure and methods
@@ -287,6 +290,57 @@ namespace OpenSSL
 			}
 		}
 
+    internal class GenerateCookieCallbackThunk
+    {
+      public readonly Native.app_gen_cookie_cb NativeCallback;
+      private GenerateCookieCallback _local_callback;
+
+      public GenerateCookieCallbackThunk(GenerateCookieCallback callback)
+      {
+        _local_callback = callback;
+        if(callback != null) {
+          NativeCallback = OnCallback;
+        } else {
+          NativeCallback = null;
+        }
+      }
+
+      private int OnCallback(IntPtr ssl_ptr, IntPtr cookie_ptr, ref int cookie_len)
+      {
+        Ssl ssl = new Ssl(ssl_ptr, false);
+        byte[] cookie;
+        int result = _local_callback(ssl, out cookie);
+
+        Marshal.Copy(cookie, 0, cookie_ptr, cookie.Length);
+        cookie_len = cookie.Length;
+        return result;
+      }
+    }
+
+    internal class VerifyCookieCallbackThunk
+    {
+      public readonly Native.app_verify_cookie_cb NativeCallback;
+      private VerifyCookieCallback _local_callback;
+
+      public VerifyCookieCallbackThunk(VerifyCookieCallback callback)
+      {
+        _local_callback = callback;
+        if(callback != null) {
+          NativeCallback = OnCallback;
+        } else {
+          NativeCallback = null;
+        }
+      }
+
+      private int OnCallback(IntPtr ssl_ptr, IntPtr cookie_ptr, int cookie_len)
+      {
+        Ssl ssl = new Ssl(ssl_ptr, false);
+        byte[] cookie = new byte[cookie_len];
+        Marshal.Copy(cookie_ptr, cookie, 0, cookie_len);
+        return _local_callback(ssl, cookie);
+      }
+    }
+
 		#region Methods
 
 		/// <summary>
@@ -410,6 +464,18 @@ namespace OpenSSL
 			_clientCertCallbackThunk = new ClientCertCallbackThunk(callback);
 			Native.SSL_CTX_set_client_cert_cb(this.ptr, _clientCertCallbackThunk.Callback);
 		}
+
+    public void SetCookieGenerateCallback(GenerateCookieCallback callback)
+    {
+      Native.SSL_CTX_set_cookie_generate_cb(this.ptr,
+          (new GenerateCookieCallbackThunk(callback)).NativeCallback);
+    }
+
+    public void SetCookieVerifyCallback(VerifyCookieCallback callback)
+    {
+      Native.SSL_CTX_set_cookie_verify_cb(this.ptr,
+          (new VerifyCookieCallbackThunk(callback).NativeCallback));
+    }
 
 		public List<string> GetCipherList()
 		{

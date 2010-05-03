@@ -275,6 +275,8 @@ namespace OpenSSL
 		SSL_OP_NO_SSLv2 = 0x01000000,
 		SSL_OP_NO_SSLv3 = 0x02000000,
 		SSL_OP_NO_TLSv1 = 0x04000000,
+    /* Don't use compression even if supported */
+    SSL_OP_NO_COMPRESSION = 0x00020000,
 
 		/* The next flag deliberately changes the ciphertest, this is a check
 		 * for the PKCS#1 attack */
@@ -317,5 +319,10 @@ namespace OpenSSL
     BEFORE = 0x4000,
     OK = 0x3,
     RENEGOTIATE = 0x3004
+  }
+
+  public enum SslCtrl {
+    OPTIONS = 32,
+    CLEAR_OPTIONS = 77
   }
 }

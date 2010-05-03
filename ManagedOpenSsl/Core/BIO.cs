@@ -158,6 +158,12 @@ namespace OpenSSL.Core
 			Close = 1
 		}
 
+    public bool NonBlocking {
+      set {
+        Native.BIO_ctrl(this.ptr, Native.BIO_C_SET_NBIO, value ? 1 : 0, IntPtr.Zero);
+      }
+    }
+
 		/// <summary>
 		/// Calls BIO_set_close()
 		/// </summary>

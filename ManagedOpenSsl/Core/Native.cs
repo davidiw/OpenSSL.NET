@@ -146,6 +146,12 @@ namespace OpenSSL.Core
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int client_cert_cb(IntPtr ssl, out IntPtr x509, out IntPtr pkey);
 
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int app_gen_cookie_cb(IntPtr ssl, IntPtr cookie, ref int cookie_len);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int app_verify_cookie_cb(IntPtr ssl, IntPtr cookie, int cookie_len);
+
 		#endregion
 
 		#region Initialization
@@ -154,9 +160,9 @@ namespace OpenSSL.Core
 			Version lib = Version.Library;
 			Version wrapper = Version.Wrapper;
 			uint mmf = lib.Raw & 0xfffff000;
-			if (mmf != wrapper.Raw)
-				throw new Exception(string.Format("Invalid version of {0}, expecting {1}, got: {2}",
-					DLLNAME, wrapper, lib));
+//			if (mmf != wrapper.Raw)
+//				throw new Exception(string.Format("Invalid version of {0}, expecting {1}, got: {2}",
+//					DLLNAME, wrapper, lib));
 
 			// Enable FIPS mode
 			if (FIPS.Enabled)
@@ -1212,6 +1218,7 @@ namespace OpenSSL.Core
 
 		[DllImport(DLLNAME)]
 		public extern static IntPtr PEM_read_bio_PrivateKey(IntPtr bp, IntPtr x, pem_password_cb cb, IntPtr u);
+
 		#endregion
 
 		#region PUBKEY
@@ -1621,6 +1628,7 @@ namespace OpenSSL.Core
 		[DllImport(DLLNAME)]
 		public extern static IntPtr BIO_f_null();
 
+    public const int BIO_C_SET_NBIO = 102;
 		const int BIO_C_SET_FD = 104;
 		const int BIO_C_SET_MD = 111;
 		const int BIO_C_GET_MD = 112;
@@ -2020,6 +2028,12 @@ namespace OpenSSL.Core
 		[DllImport(SSLDLLNAME)]
 		public extern static void SSL_CTX_set_client_cert_cb(IntPtr ssl_ctx, client_cert_cb callback);
 
+		[DllImport(SSLDLLNAME)]
+		public extern static void SSL_CTX_set_cookie_generate_cb(IntPtr ssl_ctx, app_gen_cookie_cb callback);
+
+		[DllImport(SSLDLLNAME)]
+		public extern static void SSL_CTX_set_cookie_verify_cb(IntPtr ssl_ctx, app_verify_cookie_cb callback);
+
 		#endregion
 
 		#region SSL functions
@@ -2122,6 +2136,15 @@ namespace OpenSSL.Core
 
 		[DllImport(SSLDLLNAME)]
 		public extern static void SSL_set_read_ahead(IntPtr ssl, int yes);
+
+    [DllImport(SSLDLLNAME)]
+    public extern static IntPtr dtls1_get_timeout(IntPtr ssl, IntPtr timeval);
+
+    [DllImport(SSLDLLNAME)]
+    public extern static int dtls1_read_failed(IntPtr ssl, int code);
+
+    [DllImport(SSLDLLNAME)]
+    public extern static long SSL_ctrl(IntPtr ssl, int cmd, long options, IntPtr parg);
 
 		#endregion
 
